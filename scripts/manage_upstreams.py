@@ -42,10 +42,13 @@ def verify(spec: UpstreamSpec, *, allow_dirty: bool = False) -> dict[str, object
     clean = _is_clean(spec)
     if head != spec.pinned_commit:
         raise RuntimeError(
-            f"{spec.name}: HEAD {head} does not match pinned commit {spec.pinned_commit}."
+            f"{spec.name}: HEAD {head} does not match pinned commit "
+            f"{spec.pinned_commit}."
         )
     if not clean and not allow_dirty:
-        raise RuntimeError(f"{spec.name}: checkout is dirty; paper runs require a clean upstream.")
+        raise RuntimeError(
+            f"{spec.name}: checkout is dirty; paper runs require a clean upstream."
+        )
     return {
         "name": spec.name,
         "checkout": str(checkout),
@@ -64,7 +67,9 @@ def sync(spec: UpstreamSpec, *, transport: str) -> dict[str, object]:
     if checkout.exists() and not (checkout / ".git").exists():
         raise RuntimeError(f"{spec.name}: {checkout} exists but is not a git checkout.")
     if (checkout / ".git").exists() and not _is_clean(spec):
-        raise RuntimeError(f"{spec.name}: refusing to update a dirty checkout at {checkout}.")
+        raise RuntimeError(
+            f"{spec.name}: refusing to update a dirty checkout at {checkout}."
+        )
 
     if not checkout.exists():
         _run("git", "clone", "--no-checkout", remote, str(checkout))
@@ -76,7 +81,9 @@ def sync(spec: UpstreamSpec, *, transport: str) -> dict[str, object]:
     return verify(spec)
 
 
-def _select(specs: tuple[UpstreamSpec, ...], names: list[str]) -> tuple[UpstreamSpec, ...]:
+def _select(
+    specs: tuple[UpstreamSpec, ...], names: list[str]
+) -> tuple[UpstreamSpec, ...]:
     if not names:
         return specs
     by_name = {spec.name: spec for spec in specs}
@@ -90,14 +97,18 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    list_parser = subparsers.add_parser("list", help="Print locked upstream specifications.")
+    list_parser = subparsers.add_parser(
+        "list", help="Print locked upstream specifications."
+    )
     list_parser.add_argument("--name", action="append", default=[])
 
     sync_parser = subparsers.add_parser("sync", help="Clone/update pinned checkouts.")
     sync_parser.add_argument("--name", action="append", default=[])
     sync_parser.add_argument("--transport", choices=("ssh", "https"), default="ssh")
 
-    verify_parser = subparsers.add_parser("verify", help="Verify commit and cleanliness.")
+    verify_parser = subparsers.add_parser(
+        "verify", help="Verify commit and cleanliness."
+    )
     verify_parser.add_argument("--name", action="append", default=[])
     verify_parser.add_argument("--allow-dirty", action="store_true")
     return parser.parse_args()
