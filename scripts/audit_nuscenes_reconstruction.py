@@ -17,7 +17,13 @@ import numpy as np
 from nuscenes.nuscenes import NuScenes
 
 from emma_reasoning.data import iter_ego_windows
-from emma_reasoning.evaluation import evaluate_trajectory
+from emma_reasoning.evaluation import (
+    action_diagnostics,
+    displacement_error_by_step,
+    distribution_summary,
+    evaluate_trajectory,
+    worst_reconstruction_cases,
+)
 from emma_reasoning.trajectory import (
     estimate_interval_actions,
     integrate_speed_curvature,
@@ -79,16 +85,6 @@ def horizon_metrics(
     return result
 
 
-def summarize(values: list[float]) -> dict[str, float]:
-    array = np.asarray(values, dtype=np.float64)
-    return {
-        "mean": float(np.mean(array)),
-        "median": float(np.median(array)),
-        "p95": float(np.quantile(array, 0.95)),
-        "max": float(np.max(array)),
-    }
-
-
 def main() -> None:
     args = parse_args()
     if not args.dataroot.exists():
@@ -107,6 +103,10 @@ def main() -> None:
     nominal_fdes: list[float] = []
     fit_residuals: list[float] = []
     dt_deviations: list[float] = []
+    all_speeds: list[float] = []
+    all_curvatures: list[float] = []
+    all_durations: list[float] = []
+    records: list[dict[str, Any]] = []
     records_written = 0
 
     with args.output.open("w", encoding="utf-8") as handle:
@@ -179,7 +179,7 @@ def main() -> None:
                     dt=args.nominal_dt,
                 ),
             }
-            handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+            handle.write(json.dumps(record, ensure_ascii=False, allow_nan=False) + "\n")
 
             actual_ades.append(actual_metrics.ade_m)
             actual_fdes.append(actual_metrics.fde_m)
@@ -187,6 +187,10 @@ def main() -> None:
             nominal_fdes.append(nominal_metrics.fde_m)
             fit_residuals.extend(actions.fit_residual_m.tolist())
             dt_deviations.extend(np.abs(actions.dt_seconds - args.nominal_dt).tolist())
+            all_speeds.extend(actions.speeds_mps.tolist())
+            all_curvatures.extend(actions.curvatures_inv_m.tolist())
+            all_durations.extend(actions.dt_seconds.tolist())
+            records.append(record)
             records_written += 1
 
             if records_written % 50 == 0:
@@ -203,18 +207,52 @@ def main() -> None:
         "fut_len": args.fut_len,
         "stride": args.stride,
         "records": records_written,
-        "actual_timestamp_ade_m": summarize(actual_ades),
-        "actual_timestamp_fde_m": summarize(actual_fdes),
-        "nominal_dt_ade_m": summarize(nominal_ades),
-        "nominal_dt_fde_m": summarize(nominal_fdes),
-        "interval_arc_fit_residual_m": summarize(fit_residuals),
-        "timestamp_abs_deviation_from_nominal_seconds": summarize(dt_deviations),
+        "actual_timestamp_ade_m": distribution_summary(actual_ades, name="actual ADE"),
+        "actual_timestamp_fde_m": distribution_summary(actual_fdes, name="actual FDE"),
+        "nominal_dt_ade_m": distribution_summary(nominal_ades, name="nominal ADE"),
+        "nominal_dt_fde_m": distribution_summary(nominal_fdes, name="nominal FDE"),
+        "interval_arc_fit_residual_m": distribution_summary(
+            fit_residuals, name="arc fit residuals"
+        ),
+        "timestamp_abs_deviation_from_nominal_seconds": distribution_summary(
+            dt_deviations, name="timestamp deviations"
+        ),
+        "actual_minus_nominal_ade_m": distribution_summary(
+            np.asarray(actual_ades) - np.asarray(nominal_ades),
+            name="actual minus nominal ADE",
+        ),
+        "actual_minus_nominal_fde_m": distribution_summary(
+            np.asarray(actual_fdes) - np.asarray(nominal_fdes),
+            name="actual minus nominal FDE",
+        ),
+        "action_diagnostics": action_diagnostics(
+            all_speeds,
+            all_curvatures,
+            all_durations,
+            nominal_dt=args.nominal_dt,
+        ),
+        "actual_timestamp_displacement_error_by_step_m": displacement_error_by_step(
+            [record["reconstructed_actual_dt_ego_xy_m"] for record in records],
+            [record["target_ego_xy_m"] for record in records],
+        ),
+        "nominal_dt_displacement_error_by_step_m": displacement_error_by_step(
+            [record["reconstructed_nominal_dt_ego_xy_m"] for record in records],
+            [record["target_ego_xy_m"] for record in records],
+        ),
     }
-    summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    worst_cases = worst_reconstruction_cases(records)
+    worst_cases_path = args.output.with_name("worst_cases.json")
+    summary_path.write_text(
+        json.dumps(summary, indent=2, allow_nan=False), encoding="utf-8"
+    )
+    worst_cases_path.write_text(
+        json.dumps(worst_cases, indent=2, allow_nan=False), encoding="utf-8"
+    )
 
     print(json.dumps(summary, indent=2))
     print(f"Records: {args.output}")
     print(f"Summary: {summary_path}")
+    print(f"Worst cases: {worst_cases_path}")
 
     if args.assert_max_actual_ade is not None:
         maximum = summary["actual_timestamp_ade_m"]["max"]
