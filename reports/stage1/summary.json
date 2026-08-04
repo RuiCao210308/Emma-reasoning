@@ -1,0 +1,75 @@
+{
+  "stage": 1,
+  "name": "trusted trajectory evaluation core",
+  "status": "PASSED",
+  "date": "2026-08-04",
+  "dataset": {
+    "name": "nuScenes",
+    "version": "v1.0-mini",
+    "camera_channel": "CAM_FRONT",
+    "windows": 214,
+    "obs_len": 10,
+    "fut_len": 10,
+    "stride": 1
+  },
+  "source": {
+    "branch": "stage1-trusted-eval",
+    "audit_commit": "4bb96e205208a33a922452bbfe3597cb179807d4",
+    "merged_main_commit": "8ff887066f5c624d9a6eddf96eac3f63dffdfa3a",
+    "local_output_dir": "outputs/reconstruction_audit/full"
+  },
+  "tests": {
+    "pytest": "19 passed",
+    "ruff": "passed",
+    "github_actions": "passed"
+  },
+  "metrics": {
+    "actual_timestamp_ade_m": {
+      "mean": 0.091741,
+      "median": 0.088441,
+      "p95": 0.223574,
+      "max": 0.319455
+    },
+    "actual_timestamp_fde_m": {
+      "mean": 0.165879,
+      "median": 0.157919,
+      "p95": 0.423835,
+      "max": 0.553636
+    },
+    "nominal_dt_ade_m": {
+      "mean": 0.153597,
+      "median": 0.124017,
+      "p95": 0.446983,
+      "max": 0.704037
+    },
+    "nominal_dt_fde_m": {
+      "mean": 0.22788,
+      "median": 0.206305,
+      "p95": 0.70649,
+      "max": 0.93445
+    },
+    "interval_arc_fit_residual_m": {
+      "mean": 0.016751,
+      "median": 0.014016,
+      "p95": 0.047656,
+      "max": 0.084266
+    },
+    "timestamp_abs_deviation_from_nominal_s": {
+      "mean": 0.006755,
+      "median": 0.0,
+      "p95": 0.05,
+      "max": 0.100017
+    }
+  },
+  "worst_case": {
+    "sample_id": "scene-1077:0016",
+    "ade_m": 0.319455,
+    "fde_m": 0.553636
+  },
+  "risks": [
+    "near-stop curvature singularity",
+    "correlated worst cases in scene-1077",
+    "limited v1.0-mini scale"
+  ],
+  "next_stage": "leakage-free frozen trajectory baselines"
+}
