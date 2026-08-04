@@ -16,6 +16,7 @@ leakage-free controls on the same samples and evaluator. Negative results remain
 - The independent trusted evaluator is an audit layer, not an OpenEMMA reproduction.
 - Detailed raw records stay under ignored `outputs/`; compact reports belong in `reports/`.
 - OpenEMMA execution and audit evaluation may use separate environments and exchange JSON/JSONL.
+- `GOAL.md` is the ordered executable roadmap; work continues from its first incomplete phase.
 
 ## Accepted stages
 
@@ -27,17 +28,15 @@ leakage-free controls on the same samples and evaluator. Negative results remain
   The frozen history-only baseline run covers 214 windows and 856 records. Four deterministic
   baselines were evaluated; sanitized-minus-raw oracle mean ADE was 0.000167 m.
 - **OpenEMMA architecture — implemented in Draft PR #3, awaiting review/merge.** Locking,
-  ownership boundaries, contracts, and feasibility gates exist. Static audit, untouched pilot,
-  trusted re-evaluation, and adapter parity have not been performed.
+  ownership boundaries, contracts, context guidance, and feasibility gates exist. Static audit,
+  untouched pilot, trusted re-evaluation, and adapter parity have not been performed.
 
 ## Active branches and PRs
 
-- `main`: `8ff887066f5c624d9a6eddf96eac3f63dffdfa3a`; Stage 1 evaluator merged.
-- PR #2, `stage2-frozen-baselines` -> `main`: open Draft, unmerged; head
-  `724718cf161a5aa891b5fa2eab9f21bd4b8ca958`.
-- PR #3, `architecture/openemma-upstream` -> `main`: open Draft, unmerged; this is the current
-  branch. Its verified head before this context update was
-  `e53eadbbfaa9c4846981e2630a7a8dd40c088cfd`.
+- `main`: Stage 1 evaluator merged.
+- PR #2, `stage2-frozen-baselines` -> `main`: open Draft and unmerged.
+- PR #3, `architecture/openemma-upstream` -> `main`: open Draft and unmerged; this is the
+  active branch. `GOAL.md` defines Phase 0 as the first incomplete milestone.
 
 ## Pinned upstreams
 
@@ -57,14 +56,16 @@ leakage-free controls on the same samples and evaluator. Negative results remain
 
 ## Current blockers
 
+- PR #3 CI currently fails because adjacent timestamp validation incorrectly uses strict zip on
+  sequences of length N and N-1; Phase 0 must repair this before provenance work continues.
 - PR #2 and PR #3 remain Draft and unmerged, so their artifacts are not available on `main`.
 - Pinned upstream checkouts are absent and have not been locally verified.
 - No OpenEMMA parity evidence exists yet.
 
 ## Next milestone
 
-After the architecture is accepted, perform the pinned OpenEMMA static pipeline audit and an
-untouched deterministic pilot, then re-evaluate the same raw outputs with the trusted evaluator.
+Complete Phase 0 in `GOAL.md`: fix timestamp validation, pass local and GitHub CI, then begin the
+pinned OpenEMMA static audit. Stop before model inference.
 
 ## Update rule
 
