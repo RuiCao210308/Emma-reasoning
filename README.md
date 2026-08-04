@@ -47,6 +47,12 @@ pytest
 ruff check .
 ```
 
+## Working with coding agents
+
+Codex reads the root `AGENTS.md` for compact project guidance. A new session should read
+`docs/context/PROJECT_STATE.md`, then load only the task-specific rule under `.codex/rules/`
+that the task requires. Users do not need to paste the full project background into each session.
+
 ## External repositories
 
 List the pinned sources:
