@@ -9,11 +9,16 @@ from pathlib import Path
 
 FILE_BUDGETS = {
     "AGENTS.md": 12 * 1024,
+    "GOAL.md": 40 * 1024,
     "docs/context/PROJECT_STATE.md": 10 * 1024,
     ".codex/rules/upstream-parity.md": 8 * 1024,
     ".codex/rules/experiments.md": 8 * 1024,
     ".codex/rules/reporting.md": 8 * 1024,
     ".codex/rules/git-workflow.md": 8 * 1024,
+}
+LINE_LIMITS = {
+    "AGENTS.md": 400,
+    "GOAL.md": 900,
 }
 RULE_REFERENCE = re.compile(r"\.codex/rules/[a-z0-9-]+\.md")
 WEIGHT_PATH = re.compile(r"\S+\.(?:pt|pth|ckpt|safetensors)\b", re.IGNORECASE)
@@ -32,14 +37,21 @@ def check_context(root: Path) -> list[str]:
         if size > budget:
             failures.append(f"{relative} is {size} bytes; budget is {budget}")
 
+    for relative, limit in LINE_LIMITS.items():
+        path = root / relative
+        if not path.is_file():
+            continue
+        line_count = len(path.read_text(encoding="utf-8").splitlines())
+        if line_count > limit:
+            failures.append(f"{relative} is {line_count} lines; limit is {limit}")
+
     agents_path = root / "AGENTS.md"
     if not agents_path.is_file():
         return failures
 
     text = agents_path.read_text(encoding="utf-8")
-    line_count = len(text.splitlines())
-    if line_count > 400:
-        failures.append(f"AGENTS.md is {line_count} lines; limit is 400")
+    if "GOAL.md" not in text:
+        failures.append("AGENTS.md does not route active research work through GOAL.md")
 
     references = sorted(set(RULE_REFERENCE.findall(text)))
     if not references:
