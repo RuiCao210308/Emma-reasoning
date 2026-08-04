@@ -4,8 +4,8 @@ Status: ACTIVE
 Owner: project repository  
 Last updated: 2026-08-04  
 Active branch: `architecture/openemma-upstream`  
-Active phase: Phase 1 — pinned upstream synchronization and static audit
-Current stop point: complete the static audit and stop before model inference
+Active phase: Phase 2 — untouched official parity pilot
+Current stop point: prepare the bounded pilot and request approval before model inference
 
 ## 1. Project goal
 
@@ -302,7 +302,7 @@ GitHub Actions run `30889593449` passed on the Phase 0 validation head.
 Do not run OpenEMMA model inference in this phase.
 ## Phase 1 — pinned upstream synchronization and static audit
 
-Status: ACTIVE.
+Status: PASSED.
 ### Objective
 
 Determine what the official OpenEMMA and legacy CoT code actually do before writing or running an adapter.
@@ -350,12 +350,13 @@ Phase 1 passes when:
 - the report states whether a pilot is ready;
 - no runtime claim is presented as source-confirmed evidence.
 
+Decision: PASSED on 2026-08-04. Both lock commits were verified clean and the static questions
+were answered or marked runtime unknown. Report: `reports/openemma_static_audit/report.md`.
+Untouched pilot readiness remains NOT PASSED until the Phase 2 capture contract is prepared.
 ### Stop condition
-
 Static-audit PASSED does not mean parity PASSED. Stop before model inference unless the user authorizes the bounded pilot.
 ## Phase 2 — untouched official parity pilot
-
-Status: PENDING.
+Status: ACTIVE.
 ### Objective
 
 Run the clean pinned official path without modifying prompts, preprocessing, parsing, or evaluator behavior.
@@ -845,18 +846,17 @@ Detailed records remain in ignored `outputs/<experiment_id>/`.
 
 ## 9. Immediate next actions
 
-The first incomplete work is Phase 1.
+The first incomplete work is Phase 2.
 
 Execute in this order:
 
-1. synchronize and verify both pinned upstream checkouts;
-2. audit the actual official and legacy execution paths against the Phase 1 questions;
-3. record immutable source references and runtime unknowns;
-4. generate the static-audit report and strict JSON summary;
-5. run context check, pytest, Ruff, and diff check;
-6. update `PROJECT_STATE.md`, reports, and this file's active phase;
-7. commit and push to the Phase 1 branch or the existing owning branch;
-8. stop before model inference.
+1. define a 5–10-sample immutable pilot manifest and failure policy;
+2. choose and pin one runnable official model/checkpoint revision;
+3. design external capture of actual images, prompts, settings, raw calls, retries, and errors;
+4. verify the separate upstream environment, cache, memory estimate, and runtime budget;
+5. document the untouched command and offline record schema;
+6. request explicit authorization before the first GPU model load or inference;
+7. after authorization, run only the bounded pilot and stop at its gate.
 
 ## 10. Updating this goal
 

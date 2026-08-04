@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "phase": 1,
+  "name": "pinned OpenEMMA synchronization and static audit",
+  "date": "2026-08-04",
+  "status": "PASSED",
+  "pilot_readiness": "NOT PASSED",
+  "model_inference_performed": false,
+  "sources": {
+    "official_openemma": {
+      "repository": "https://github.com/taco-group/OpenEMMA",
+      "commit": "8403ea636696c5c10e8fdeca566410de0a07e449",
+      "checkout": "third_party/OpenEMMA",
+      "clean": true,
+      "verified": true
+    },
+    "legacy_cot": {
+      "repository": "https://github.com/RuiCao210308/CoT",
+      "branch_role": "Config historical prototype",
+      "commit": "a214a2ccc2581e4a59e59d392fb969c29519044e",
+      "checkout": "third_party/CoT-legacy",
+      "clean": true,
+      "verified": true
+    }
+  },
+  "official_entrypoint": {
+    "path": "main.py",
+    "observation_keyframes": 10,
+    "future_keyframes": 10,
+    "hard_coded_scenes": [
+      "scene-0103",
+      "scene-1077"
+    ],
+    "actual_frame_inputs": {
+      "gpt": "ten base64 CAM_FRONT keyframes",
+      "qwen": "final CAM_FRONT keyframe path only",
+      "llava": "final CAM_FRONT keyframe path only",
+      "llama": "final CAM_FRONT keyframe path only, but CLI model loader is absent"
+    }
+  },
+  "critical_findings": [
+    "prompt and actual frame history diverge for non-GPT backends",
+    "script execution and module import resolve different vlm_inference definitions",
+    "parse failures and partial outputs change denominators without structured records",
+    "official integration timing and target alignment are not trusted",
+    "official BaseOpenEMMA waypoint rationale uses future ground truth",
+    "legacy reasoning and selector paths are future-leaking or history-smoothness dominated"
+  ],
+  "runtime_unknowns": [
+    "GPT message compatibility",
+    "Qwen2.5 imported branch selection",
+    "model cache and environment compatibility",
+    "GPU memory, latency, and deterministic repeatability",
+    "PyPI package parity with the pinned GitHub tree"
+  ],
+  "artifacts": {
+    "detailed_audit": "docs/provenance/openemma_static_audit.md",
+    "report": "reports/openemma_static_audit/report.md",
+    "summary": "reports/openemma_static_audit/summary.json"
+  },
+  "next_gate": "Prepare the bounded untouched pilot contract and stop before model inference."
+}

@@ -29,24 +29,27 @@ leakage-free controls on the same samples and evaluator. Negative results remain
   baselines were evaluated; sanitized-minus-raw oracle mean ADE was 0.000167 m.
 - **OpenEMMA architecture / Phase 0 — PASSED in Draft PR #3, awaiting review/merge.** Locking,
   ownership boundaries, contracts, context guidance, and feasibility gates exist. Local checks
-  and GitHub Actions passed after the timestamp-validation repair. Static audit, untouched pilot,
-  trusted re-evaluation, and adapter parity have not been performed.
+  and GitHub Actions passed after the timestamp-validation repair.
+- **OpenEMMA static audit / Phase 1 — PASSED.** Both pinned checkouts are exact and clean. The
+  source audit found input/prompt divergence, silent failure-denominator changes, untrusted
+  official timing/alignment, and future leakage in the separate waypoint/legacy paths. Untouched
+  pilot readiness is NOT PASSED; see `reports/openemma_static_audit/report.md`.
 
 ## Active branches and PRs
 
 - `main`: Stage 1 evaluator merged.
 - PR #2, `stage2-frozen-baselines` -> `main`: open Draft and unmerged.
 - PR #3, `architecture/openemma-upstream` -> `main`: open Draft and unmerged; this is the
-  active branch. `GOAL.md` defines Phase 1 as the first incomplete milestone.
+  active branch. `GOAL.md` defines Phase 2 as the first incomplete milestone.
 
 ## Pinned upstreams
 
 - Official OpenEMMA: `https://github.com/taco-group/OpenEMMA`, commit
   `8403ea636696c5c10e8fdeca566410de0a07e449`, local path `third_party/OpenEMMA`.
-  The checkout is absent: **not yet verified locally**.
+  The local checkout matches the commit and is clean: **verified locally**.
 - Legacy CoT (`Config`): `https://github.com/RuiCao210308/CoT`, commit
   `a214a2ccc2581e4a59e59d392fb969c29519044e`, local path `third_party/CoT-legacy`.
-  The checkout is absent: **not yet verified locally**.
+  The local checkout matches the commit and is clean: **verified locally**.
 
 ## Data and environment
 
@@ -58,15 +61,16 @@ leakage-free controls on the same samples and evaluator. Negative results remain
 ## Current blockers
 
 - PR #2 and PR #3 remain Draft and unmerged, so their artifacts are not available on `main`.
-- Pinned upstream checkouts are absent and have not been locally verified.
 - No OpenEMMA parity evidence exists yet.
+- The untouched pilot lacks a frozen manifest, pinned model revision, external raw-call capture,
+  verified runtime environment, and explicit authorization for first GPU inference.
 - The PR #3 body still lacks the context-guidance summary because this host has no authenticated
   GitHub API client; branch commits and CI are current.
 
 ## Next milestone
 
-Complete Phase 1 in `GOAL.md`: synchronize the pinned clean upstreams, perform the static source
-audit, and publish its compact report. Stop before model inference.
+Prepare the bounded Phase 2 untouched-pilot contract: manifest, model revision, capture schema,
+environment, compute estimate, and failure policy. Request approval before model inference.
 
 ## Update rule
 
