@@ -19,6 +19,14 @@ dev = [
   "pytest>=8.0",
   "ruff>=0.6",
 ]
+nuscenes = [
+  "nuscenes-devkit>=1.1.11",
+]
+all = [
+  "nuscenes-devkit>=1.1.11",
+  "pytest>=8.0",
+  "ruff>=0.6",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
