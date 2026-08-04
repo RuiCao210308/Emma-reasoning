@@ -4,22 +4,32 @@ Research code for auditing inference-time reasoning in vision-language motion pl
 
 The project asks whether additional inference-time computation—Chain-of-Thought, Self-Consistency, and candidate search—actually increases visual grounding, or merely reinforces ego-motion persistence and trajectory smoothness.
 
-## Current milestone
+## Architecture principle
 
-**Stage 1: trusted trajectory evaluation core**
+Emma-reasoning does **not** independently rewrite OpenEMMA model inference. The official implementation is cloned at a pinned commit under `third_party/OpenEMMA`, then invoked through a thin, provenance-recording adapter.
 
-Before running any VLM experiments, the repository establishes and tests:
+Responsibilities are separated:
 
-- explicit speed-curvature integration with scalar or recorded per-step `dt`;
-- prediction from the final observed ego pose, without future-point leakage;
-- world-to-ego coordinate conversion;
-- consistent ADE/FDE horizon indexing;
-- speed and curvature metrics with explicit units;
-- deterministic nuScenes sliding windows;
-- pose-to-action fitting with a reported constant-curvature residual;
-- unit tests for temporal alignment and geometry.
+- **OpenEMMA upstream:** model loading, image preprocessing, prompts, and original inference behavior;
+- **Emma-reasoning adapter:** exact input/output/provenance capture and explicit interventions;
+- **Emma-reasoning evaluator:** parsing audits, timestamp-aware trajectory integration, metrics, and causal comparisons;
+- **local outputs:** large raw JSONL, caches, and checkpoints that are not committed.
 
-No quantitative result should be treated as a paper result until it is produced by the tested evaluation pipeline in this repository.
+See `docs/architecture.md`, `docs/experiment_gate.md`, and `docs/provenance/openemma.md` before implementing a VLM experiment.
+
+## Repository map
+
+```text
+upstreams/                     pinned external repository locks
+third_party/                   local ignored OpenEMMA/legacy checkouts
+patches/openemma/              reviewed patches only when unavoidable
+src/emma_reasoning/adapters/   thin upstream boundaries
+src/emma_reasoning/evaluation/ trusted evaluation
+src/emma_reasoning/trajectory/ trusted action and trajectory geometry
+experiments/                   declarative experiment manifests
+reports/                       compact committed results
+outputs/                       large local records
+```
 
 ## Installation
 
@@ -37,33 +47,47 @@ pytest
 ruff check .
 ```
 
-## nuScenes reconstruction audit
+## External repositories
 
-The first dataset-level experiment does not call a VLM. It extracts timestamped ego poses, fits one speed-curvature action per future interval, integrates from the final observed pose, and measures representation and timing error.
-
-Start with a small pilot:
+List the pinned sources:
 
 ```bash
-python scripts/audit_nuscenes_reconstruction.py \
-  --dataroot /path/to/nuscenes \
-  --version v1.0-mini \
-  --obs-len 10 \
-  --fut-len 10 \
-  --max-windows 50
+python scripts/manage_upstreams.py list
 ```
 
-Outputs:
+Clone both official OpenEMMA and the historical CoT prototype using SSH:
 
-```text
-outputs/reconstruction_audit/records.jsonl
-outputs/reconstruction_audit/summary.json
+```bash
+python scripts/manage_upstreams.py sync --transport ssh
 ```
 
-The summary separates:
+Verify exact commits and clean worktrees before any run:
 
-- reconstruction using recorded camera timestamps;
-- reconstruction after forcing every future interval to `0.5 s`;
-- per-interval circular-arc fitting residual;
-- deviation of recorded timestamps from the nominal sampling interval.
+```bash
+python scripts/manage_upstreams.py verify
+```
 
-This audit must be inspected before adding OpenEMMA or Qwen inference.
+The official OpenEMMA checkout is pinned to commit `8403ea636696c5c10e8fdeca566410de0a07e449`. The legacy `CoT` Config prototype is pinned separately and is never treated as a paper baseline without parity re-evaluation.
+
+## Trusted evaluation status
+
+Stage 1 established and tested:
+
+- speed-curvature integration with scalar or recorded per-step `dt`;
+- prediction from the final observed ego pose, without future-point leakage;
+- world-to-ego coordinate conversion;
+- aligned ADE/FDE horizon indexing;
+- deterministic nuScenes sliding windows;
+- pose-to-action fitting with an explicit residual audit.
+
+These utilities are an external audit layer. They do not constitute an OpenEMMA reproduction.
+
+## Next required milestone
+
+The next VLM milestone is an **OpenEMMA provenance and parity audit**, not a new inference implementation:
+
+1. inspect the pinned official source path;
+2. record actual frames, prompts, generation settings, parsing, retries, and evaluator behavior;
+3. run an untouched deterministic upstream pilot;
+4. re-evaluate the same raw outputs with the trusted evaluator;
+5. explain discrepancies before adding CoT, SC, ToT, or GRTC interventions.
