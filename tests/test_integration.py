@@ -18,6 +18,20 @@ def test_straight_motion_uses_explicit_half_second_dt() -> None:
     np.testing.assert_allclose(rollout.headings, 0.0, atol=1e-12)
 
 
+def test_variable_step_durations_are_applied_individually() -> None:
+    rollout = integrate_speed_curvature(
+        speeds_mps=[2.0, 2.0, 2.0],
+        curvatures_inv_m=[0.0, 0.0, 0.0],
+        dt=[0.25, 0.5, 0.75],
+    )
+
+    np.testing.assert_allclose(
+        rollout.positions,
+        [[0.5, 0.0], [1.5, 0.0], [3.0, 0.0]],
+        atol=1e-12,
+    )
+
+
 def test_constant_curvature_exact_quarter_circle() -> None:
     rollout = integrate_speed_curvature(
         speeds_mps=[1.0],
