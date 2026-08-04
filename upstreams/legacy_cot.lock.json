@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "name": "legacy-cot-prototype",
+  "role": "historical_prototype_for_comparison_only",
+  "repository": {
+    "ssh_url": "git@github.com:RuiCao210308/CoT.git",
+    "https_url": "https://github.com/RuiCao210308/CoT.git",
+    "web_url": "https://github.com/RuiCao210308/CoT",
+    "branch": "Config"
+  },
+  "pinned_commit": "a214a2ccc2581e4a59e59d392fb969c29519044e",
+  "checkout_path": "third_party/CoT-legacy",
+  "policy": {
+    "tracked_in_this_repository": false,
+    "modify_upstream_checkout": false,
+    "treat_results_as_paper_results": false,
+    "reuse_without_parity_audit": false
+  }
+}

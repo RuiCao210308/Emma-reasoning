@@ -11,6 +11,13 @@ env/
 .vscode/
 .idea/
 
+# Local Codex settings; task rules under .codex/rules/ remain tracked.
+.codex/config.toml
+
+# Local external source checkouts. Provenance is tracked in upstreams/*.lock.json.
+third_party/*
+!third_party/README.md
+
 # Local datasets, caches, checkpoints, and outputs
 data/
 datasets/

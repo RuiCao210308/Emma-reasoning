@@ -1,0 +1,256 @@
+{
+  "schema_version": 1,
+  "experiment_id": "openemma_parity_pilot_v1",
+  "status": "BLOCKED_PRE_INFERENCE",
+  "dataset": {
+    "name": "nuScenes",
+    "version": "v1.0-mini",
+    "camera_channel": "CAM_FRONT",
+    "observation_keyframes": 10,
+    "future_keyframes": 10,
+    "stride": 1
+  },
+  "selection": {
+    "uses_future_targets": false,
+    "policy": "fixed IDs selected from observed motion and anchor annotations only",
+    "expected_records": 6
+  },
+  "upstream": {
+    "repository": "https://github.com/taco-group/OpenEMMA",
+    "commit": "8403ea636696c5c10e8fdeca566410de0a07e449",
+    "checkout": "third_party/OpenEMMA",
+    "required_clean": true
+  },
+  "model": {
+    "model_id": "Qwen/Qwen2-VL-7B-Instruct",
+    "revision": "eed13092ef92e448dd6875b2a00151bd3f7db0ac",
+    "dtype": "bfloat16",
+    "method": "openemma",
+    "generation": {
+      "max_new_tokens": 128,
+      "sampling": false,
+      "seed": 0
+    },
+    "weights_cached_at_manifest_build": false
+  },
+  "samples": [
+    {
+      "sample_id": "scene-0061:0010",
+      "regime": "visually_nontrivial",
+      "scene_name": "scene-0061",
+      "start_index": 10,
+      "anchor_sample_token": "b26e791522294bec90f86fd72226e35c",
+      "observed_image_relpaths": [
+        "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402932612460.jpg",
+        "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402933112460.jpg",
+        "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402933612460.jpg",
+        "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402934112460.jpg",
+        "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402934662484.jpg",
+        "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402935162463.jpg",
+        "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402935662460.jpg",
+        "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402936162460.jpg",
+        "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402936662460.jpg",
+        "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402937162460.jpg"
+      ],
+      "official_qwen_image_relpaths": [
+        "samples/CAM_FRONT/n015-2018-07-24-11-22-45+0800__CAM_FRONT__1532402937162460.jpg"
+      ],
+      "selection_features": {
+        "observed_anchor_speed_mps": 4.201778,
+        "observed_mean_speed_mps": 5.244976,
+        "observed_heading_change_rad": 0.648592,
+        "anchor_annotation_count": 156
+      }
+    },
+    {
+      "sample_id": "scene-0103:0008",
+      "regime": "decelerating",
+      "scene_name": "scene-0103",
+      "start_index": 8,
+      "anchor_sample_token": "8e9c2cba0ee74056aa3746e8391d54a9",
+      "observed_image_relpaths": [
+        "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151607512404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151608012404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151608512404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151609012404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151609512404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151609912404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151610412404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151610912404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151611412404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151611862404.jpg"
+      ],
+      "official_qwen_image_relpaths": [
+        "samples/CAM_FRONT/n008-2018-08-01-15-16-36-0400__CAM_FRONT__1533151611862404.jpg"
+      ],
+      "selection_features": {
+        "observed_anchor_speed_mps": 1.668303,
+        "observed_mean_speed_mps": 5.363363,
+        "observed_heading_change_rad": -0.002954,
+        "anchor_annotation_count": 54
+      }
+    },
+    {
+      "sample_id": "scene-0553:0021",
+      "regime": "near_stop",
+      "scene_name": "scene-0553",
+      "start_index": 21,
+      "anchor_sample_token": "d3c0bbf933594f7184e20d761b6416f4",
+      "observed_image_relpaths": [
+        "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489306412404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489306912404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489307412404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489307912404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489308362404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489308862404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489309362404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489309862404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489310362404.jpg",
+        "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489310912404.jpg"
+      ],
+      "official_qwen_image_relpaths": [
+        "samples/CAM_FRONT/n008-2018-08-28-16-43-51-0400__CAM_FRONT__1535489310912404.jpg"
+      ],
+      "selection_features": {
+        "observed_anchor_speed_mps": 0.0,
+        "observed_mean_speed_mps": 1e-05,
+        "observed_heading_change_rad": 6.9e-05,
+        "anchor_annotation_count": 50
+      }
+    },
+    {
+      "sample_id": "scene-0916:0011",
+      "regime": "turn_right",
+      "scene_name": "scene-0916",
+      "start_index": 11,
+      "anchor_sample_token": "6ff9723a60bf4e14b328b3b19f04dc32",
+      "observed_image_relpaths": [
+        "samples/CAM_FRONT/n015-2018-10-08-15-36-50+0800__CAM_FRONT__1538984238912460.jpg",
+        "samples/CAM_FRONT/n015-2018-10-08-15-36-50+0800__CAM_FRONT__1538984239412460.jpg",
+        "samples/CAM_FRONT/n015-2018-10-08-15-36-50+0800__CAM_FRONT__1538984239912460.jpg",
+        "samples/CAM_FRONT/n015-2018-10-08-15-36-50+0800__CAM_FRONT__1538984240412460.jpg",
+        "samples/CAM_FRONT/n015-2018-10-08-15-36-50+0800__CAM_FRONT__1538984240912467.jpg",
+        "samples/CAM_FRONT/n015-2018-10-08-15-36-50+0800__CAM_FRONT__1538984241412460.jpg",
+        "samples/CAM_FRONT/n015-2018-10-08-15-36-50+0800__CAM_FRONT__1538984241912460.jpg",
+        "samples/CAM_FRONT/n015-2018-10-08-15-36-50+0800__CAM_FRONT__1538984242412460.jpg",
+        "samples/CAM_FRONT/n015-2018-10-08-15-36-50+0800__CAM_FRONT__1538984242912460.jpg",
+        "samples/CAM_FRONT/n015-2018-10-08-15-36-50+0800__CAM_FRONT__1538984243412460.jpg"
+      ],
+      "official_qwen_image_relpaths": [
+        "samples/CAM_FRONT/n015-2018-10-08-15-36-50+0800__CAM_FRONT__1538984243412460.jpg"
+      ],
+      "selection_features": {
+        "observed_anchor_speed_mps": 4.598466,
+        "observed_mean_speed_mps": 4.221483,
+        "observed_heading_change_rad": -1.531155,
+        "anchor_annotation_count": 67
+      }
+    },
+    {
+      "sample_id": "scene-1077:0015",
+      "regime": "straight_fast",
+      "scene_name": "scene-1077",
+      "start_index": 15,
+      "anchor_sample_token": "a32166aff42946d39455fcbe502a321a",
+      "observed_image_relpaths": [
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800375412460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800375912460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800376412496.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800376912460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800377412460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800377862460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800378362460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800378862460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800379362460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800379862460.jpg"
+      ],
+      "official_qwen_image_relpaths": [
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800379862460.jpg"
+      ],
+      "selection_features": {
+        "observed_anchor_speed_mps": 14.002671,
+        "observed_mean_speed_mps": 13.142795,
+        "observed_heading_change_rad": 0.00243,
+        "anchor_annotation_count": 21
+      }
+    },
+    {
+      "sample_id": "scene-1094:0009",
+      "regime": "turn_left",
+      "scene_name": "scene-1094",
+      "start_index": 9,
+      "anchor_sample_token": "3b594af1b130490989536590345c9dc9",
+      "observed_image_relpaths": [
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800852412460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800852912460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800853412460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800853912460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800854412460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800854912460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800855412460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800855912460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800856412460.jpg",
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800856912460.jpg"
+      ],
+      "official_qwen_image_relpaths": [
+        "samples/CAM_FRONT/n015-2018-11-21-19-38-26+0800__CAM_FRONT__1542800856912460.jpg"
+      ],
+      "selection_features": {
+        "observed_anchor_speed_mps": 5.692419,
+        "observed_mean_speed_mps": 3.656687,
+        "observed_heading_change_rad": 1.257648,
+        "anchor_annotation_count": 59
+      }
+    }
+  ],
+  "record_contract": {
+    "one_terminal_record_per_sample": true,
+    "required_fields": [
+      "run_id",
+      "sample_id",
+      "upstream_commit",
+      "upstream_clean",
+      "model_id",
+      "model_revision",
+      "ordered_image_paths",
+      "observed_motion_inputs",
+      "calls",
+      "official_parse",
+      "official_metric",
+      "terminal_status",
+      "error",
+      "wall_time_seconds",
+      "peak_gpu_memory_bytes"
+    ],
+    "call_fields": [
+      "role",
+      "attempt",
+      "prompt",
+      "system_message",
+      "generation_config",
+      "raw_text",
+      "error"
+    ]
+  },
+  "failure_policy": {
+    "expected_denominator": 6,
+    "retain_parse_failures": true,
+    "retain_runtime_failures": true,
+    "retain_partial_actions": true,
+    "never_replace_with_ground_truth": true
+  },
+  "compute_gate": {
+    "maximum_gpu_hours": 2.0,
+    "maximum_samples": 6,
+    "full_run_authorized": false,
+    "model_download_authorized": false,
+    "model_inference_authorized": false
+  },
+  "blockers": [
+    "The official CLI filters to scene-0103 and scene-1077, excluding four selected samples.",
+    "The official CLI cannot bound execution to the six manifest windows without control-plane instrumentation.",
+    "No Qwen weights are cached and the required download exceeds the autonomous 5 GB gate.",
+    "The current host exposes no working NVIDIA driver/device to nvidia-smi.",
+    "The audit environment intentionally lacks torch, transformers, and qwen_vl_utils."
+  ]
+}

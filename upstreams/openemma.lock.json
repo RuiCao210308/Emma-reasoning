@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "name": "openemma-official",
+  "role": "official_reference_implementation",
+  "repository": {
+    "ssh_url": "git@github.com:taco-group/OpenEMMA.git",
+    "https_url": "https://github.com/taco-group/OpenEMMA.git",
+    "web_url": "https://github.com/taco-group/OpenEMMA",
+    "default_branch": "main"
+  },
+  "pinned_commit": "8403ea636696c5c10e8fdeca566410de0a07e449",
+  "checkout_path": "third_party/OpenEMMA",
+  "license": "Apache-2.0",
+  "policy": {
+    "tracked_in_this_repository": false,
+    "modify_upstream_checkout": false,
+    "reuse_model_loading": true,
+    "reuse_image_preprocessing": true,
+    "reuse_prompt_construction": true,
+    "reuse_original_inference_methods": true,
+    "reuse_original_evaluator_without_audit": false
+  }
+}
