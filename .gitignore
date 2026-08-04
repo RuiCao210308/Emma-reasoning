@@ -11,6 +11,10 @@ env/
 .vscode/
 .idea/
 
+# Local external source checkouts. Provenance is tracked in upstreams/*.lock.json.
+third_party/*
+!third_party/README.md
+
 # Local datasets, caches, checkpoints, and outputs
 data/
 datasets/
