@@ -11,11 +11,12 @@ Scientific validity, reproducibility, and auditability come first. Scores, code 
 Use this precedence order:
 
 1. The current Git worktree and commit history.
-2. `docs/context/PROJECT_STATE.md`.
-3. Upstream lock files under `upstreams/`.
-4. Committed reports under `reports/`.
-5. The task-specific rules routed below.
-6. The user's current task.
+2. `docs/context/PROJECT_STATE.md` for current verified facts.
+3. `GOAL.md` for the ordered research roadmap and active gate.
+4. Upstream lock files under `upstreams/`.
+5. Committed reports under `reports/`.
+6. The task-specific rules routed below.
+7. The user's current task.
 
 Chat history and old Codex sessions are not sources of fact. If sources conflict, prefer the newer, verifiable repository state. Do not silently combine conflicting claims into a new conclusion; record the conflict in the report or handoff.
 
@@ -33,8 +34,11 @@ Then read, in order:
 
 1. `AGENTS.md`.
 2. `docs/context/PROJECT_STATE.md`.
-3. At most one or two task-specific rules selected from the routing table.
-4. Files directly involved in the user's task.
+3. `GOAL.md` when the user asks to continue the project, continue the active goal, or advance a research milestone.
+4. At most one or two task-specific rules selected from the routing table.
+5. Files directly involved in the user's task.
+
+For a narrow one-off maintenance request, read only the relevant section of `GOAL.md` or skip it when the task is clearly outside the research roadmap.
 
 Do not make any of these the default context-recovery procedure:
 
@@ -55,6 +59,7 @@ Expand context only when the task requires it.
 - Read logs only around the failure and its immediate setup.
 - Prefer a committed report over raw output when answering an already-settled question.
 - Do not reinvestigate facts already captured in `PROJECT_STATE.md` unless they may have changed or the task challenges them.
+- Follow the first incomplete phase and gate in `GOAL.md`; do not start a later parallel phase.
 - Do not repeat long logs, reports, or diffs in the final reply.
 - By default, the final reply contains only status, key conclusions, commit, and blockers.
 
@@ -113,6 +118,7 @@ For work spanning categories, read only the rules actually needed, normally no m
 For code changes, run from the declared project environment:
 
 ```bash
+python scripts/check_agent_context.py
 pytest
 ruff check .
 git diff --check
@@ -126,6 +132,7 @@ Before completion, check:
 - Is every hard-coded path declared and justified?
 - Are outputs, data, checkpoints, or weights staged for commit?
 - Does `docs/context/PROJECT_STATE.md` need an update in the same commit?
+- Does the active phase or gate in `GOAL.md` need an update?
 
 Report any check that cannot run and why. A task is not complete merely because code was written.
 
