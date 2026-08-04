@@ -33,11 +33,12 @@ leakage-free controls on the same samples and evaluator. Negative results remain
 - **OpenEMMA static audit / Phase 1 — PASSED.** Both pinned checkouts are exact and clean. The
   source audit found input/prompt divergence, silent failure-denominator changes, untrusted
   official timing/alignment, and future leakage in the separate waypoint/legacy paths. Untouched
-  pilot readiness is NOT PASSED; see `reports/openemma_static_audit/report.md`.
-- **Untouched pilot preparation / Phase 2 — BLOCKED_PRE_INFERENCE.** A six-sample observed-only
-  manifest and record contract are frozen under `experiments/openemma_parity_pilot/`. No model
-  was loaded. The official CLI cannot execute only those windows without an approved control-path
-  change.
+  pilot readiness was NOT PASSED before the bounded route was approved; see
+  `reports/openemma_static_audit/report.md`.
+- **Untouched pilot preparation / Phase 2 — APPROVED_WITH_GATES.** A six-sample observed-only
+  manifest and record contract are frozen under `experiments/openemma_parity_pilot/`. The approved
+  route is a minimal external control-plane wrapper with pre-inference input parity. One-sample
+  smoke and the remaining five samples are authorized only under the gates in `APPROVAL.md`.
 
 ## Active branches and PRs
 
@@ -66,18 +67,18 @@ leakage-free controls on the same samples and evaluator. Negative results remain
 
 - PR #2 and PR #3 remain Draft and unmerged, so their artifacts are not available on `main`.
 - No OpenEMMA parity evidence exists yet.
-- The untouched pilot lacks an approved bounded execution/capture path, verified runtime
-  environment, and explicit authorization for first GPU inference.
-- The manifest and model revision are now frozen, but the control-path choice remains unresolved;
-  no Qwen weights are cached, the audit environment lacks model dependencies, and no working
-  NVIDIA driver/device is visible.
-- The PR #3 body still lacks the context-guidance summary because this host has no authenticated
-  GitHub API client; branch commits and CI are current.
+- The approved wrapper still needs pre-inference parity proof and a validated terminal-record
+  schema before model loading.
+- No Qwen weights were cached at pilot-contract creation, the audit environment lacks model
+  dependencies, and the last runtime check did not expose a working NVIDIA driver/device.
+- Model download and GPU inference may proceed only when the environment, disk, revision, and
+  one-sample smoke gates in `experiments/openemma_parity_pilot/APPROVAL.md` pass.
 
 ## Next milestone
 
-Choose the Phase 2 control path (minimal parity wrapper, explicit upstream patch, or unbounded
-official CLI), then separately authorize any model download, environment setup, and inference.
+Implement the minimal external control-plane wrapper, prove pre-inference parity against the
+pinned official Qwen functions, validate the runtime environment, then run the authorized
+one-sample smoke if a working GPU is available. Stop with `BLOCKED_GPU` when it is not.
 
 ## Update rule
 
