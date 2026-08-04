@@ -47,6 +47,54 @@ def test_invocation_rejects_misaligned_history() -> None:
         )
 
 
+@pytest.mark.parametrize("timestamps", [(0.0,), (0.0, 0.5)])
+def test_invocation_accepts_single_or_increasing_timestamps(
+    timestamps: tuple[float, ...],
+) -> None:
+    length = len(timestamps)
+    invocation = OpenEmmaInvocation(
+        run_id="run-1",
+        sample_id="sample",
+        image_paths=("frame.jpg",),
+        observed_speeds_mps=(1.0,) * length,
+        observed_curvatures_inv_m=(0.0,) * length,
+        observed_timestamps_seconds=timestamps,
+        provenance=_provenance(),
+    )
+
+    assert invocation.observed_timestamps_seconds == timestamps
+
+
+@pytest.mark.parametrize("timestamps", [(0.0, 0.0), (0.5, 0.0)])
+def test_invocation_rejects_non_increasing_timestamps(
+    timestamps: tuple[float, float],
+) -> None:
+    with pytest.raises(ValueError, match="strictly increasing"):
+        OpenEmmaInvocation(
+            run_id="run-1",
+            sample_id="sample",
+            image_paths=("frame0.jpg", "frame1.jpg"),
+            observed_speeds_mps=(1.0, 2.0),
+            observed_curvatures_inv_m=(0.0, 0.1),
+            observed_timestamps_seconds=timestamps,
+            provenance=_provenance(),
+        )
+
+
+@pytest.mark.parametrize("invalid_timestamp", [float("nan"), float("inf")])
+def test_invocation_rejects_non_finite_timestamps(invalid_timestamp: float) -> None:
+    with pytest.raises(ValueError, match="finite values"):
+        OpenEmmaInvocation(
+            run_id="run-1",
+            sample_id="sample",
+            image_paths=("frame0.jpg", "frame1.jpg"),
+            observed_speeds_mps=(1.0, 2.0),
+            observed_curvatures_inv_m=(0.0, 0.1),
+            observed_timestamps_seconds=(0.0, invalid_timestamp),
+            provenance=_provenance(),
+        )
+
+
 def test_successful_raw_result_requires_motion_text() -> None:
     with pytest.raises(ValueError, match="raw_motion_text"):
         OpenEmmaRawResult(

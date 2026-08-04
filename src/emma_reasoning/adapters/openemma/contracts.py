@@ -72,7 +72,7 @@ class OpenEmmaInvocation:
             for earlier, later in zip(
                 self.observed_timestamps_seconds,
                 self.observed_timestamps_seconds[1:],
-                strict=True,
+                strict=False,
             )
         ):
             raise ValueError("observed_timestamps_seconds must be strictly increasing.")

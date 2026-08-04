@@ -266,17 +266,12 @@ The Stage 2 control establishes the minimum bar for visual/reasoning methods.
 ## 7. Ordered roadmap
 
 Each phase has an objective, required artifacts, and a gate. Do not skip phases.
-
----
-
 ## Phase 0 — stabilize the upstream-first foundation
 
 Status: ACTIVE.
-
 ### Objective
 
 Make PR #3 internally correct, context-efficient, and ready for static provenance work.
-
 ### Required work
 
 1. Fix the current CI failure in adjacent timestamp validation.
@@ -291,7 +286,6 @@ Make PR #3 internally correct, context-efficient, and ready for static provenanc
 6. Update PR #3 without merging it.
 
 ### Gate
-
 Phase 0 passes only when:
 
 - local tests pass;
@@ -303,17 +297,12 @@ Phase 0 passes only when:
 ### Stop condition
 
 Do not run OpenEMMA model inference in this phase.
-
----
-
 ## Phase 1 — pinned upstream synchronization and static audit
 
 Status: PENDING.
-
 ### Objective
 
 Determine what the official OpenEMMA and legacy CoT code actually do before writing or running an adapter.
-
 ### Required work
 
 1. Synchronize and verify the pinned official OpenEMMA checkout.
@@ -350,7 +339,6 @@ Determine what the official OpenEMMA and legacy CoT code actually do before writ
 - `reports/openemma_static_audit/summary.json`
 
 ### Gate
-
 Phase 1 passes when:
 
 - both checkouts match lock files and are clean;
@@ -362,17 +350,12 @@ Phase 1 passes when:
 ### Stop condition
 
 Static-audit PASSED does not mean parity PASSED. Stop before model inference unless the user authorizes the bounded pilot.
-
----
-
 ## Phase 2 — untouched official parity pilot
 
 Status: PENDING.
-
 ### Objective
 
 Run the clean pinned official path without modifying prompts, preprocessing, parsing, or evaluator behavior.
-
 ### Pilot scope
 
 Default bounded scope:
@@ -411,7 +394,6 @@ Default bounded scope:
 - wall time and peak GPU memory when practical.
 
 ### Gate
-
 Phase 2 passes when:
 
 - every expected sample has a record, including failures;
@@ -430,17 +412,12 @@ Stop and mark NOT PASSED if:
 - sample failures disappear from the denominator;
 - model output cannot be associated unambiguously with a manifest item;
 - the projected full protocol is infeasible on available hardware.
-
----
-
 ## Phase 3 — trusted re-evaluation of identical raw outputs
 
 Status: PENDING.
-
 ### Objective
 
 Evaluate the untouched pilot outputs with Emma-reasoning without another model call.
-
 ### Required work
 
 1. Build a parser-audit boundary that preserves raw text and structured parse status.
@@ -465,7 +442,6 @@ Evaluate the untouched pilot outputs with Emma-reasoning without another model c
 - tests for every confirmed evaluator discrepancy.
 
 ### Gate
-
 Phase 3 passes when:
 
 - the same raw outputs can be re-evaluated offline;
@@ -473,17 +449,12 @@ Phase 3 passes when:
 - metric discrepancies are explained rather than hidden;
 - the trusted evaluator is stable enough to compare reasoning methods;
 - no future-ground-truth anchor enters prediction.
-
----
-
 ## Phase 4 — thin adapter parity
 
 Status: PENDING.
-
 ### Objective
 
 Create the minimum adapter needed to invoke and instrument official OpenEMMA while preserving official behavior.
-
 ### Adapter responsibilities
 
 The adapter may:
@@ -517,19 +488,13 @@ Under deterministic settings, adapter-off and untouched-upstream runs must match
 - parser/failure records.
 
 ### Gate
-
 Phase 4 passes only with sample-level parity evidence. Architecture similarity is insufficient.
-
----
-
 ## Phase 5 — freeze the main experiment protocol
 
 Status: PENDING.
-
 ### Objective
 
 Pre-register the benchmark, methods, compute budgets, and interventions before large reasoning comparisons.
-
 ### Frozen comparison methods
 
 At minimum:
@@ -570,19 +535,13 @@ Freeze:
 - manifest hash.
 
 ### Gate
-
 Phase 5 passes when the full protocol is executable from one manifest and each claim maps to a planned table or figure.
-
----
-
 ## Phase 6 — Direct frozen-VLM baseline
 
 Status: PENDING.
-
 ### Objective
 
 Establish the visual model's parser-aware continuous trajectory baseline before reasoning.
-
 ### Required analyses
 
 - coverage and parse-failure rate;
@@ -595,24 +554,18 @@ Establish the visual model's parser-aware continuous trajectory baseline before 
 - history ablation pilot.
 
 ### Gate
-
 Direct is accepted as a research baseline only if:
 
 - it is evaluated on the frozen manifest;
 - failures remain in accounting;
 - it meaningfully uses vision under at least one planned grounding check, or its lack of visual use is explicitly documented;
 - official and trusted metrics are both reported when relevant.
-
----
-
 ## Phase 7 — CoT baseline and reasoning-action consistency
 
 Status: PENDING.
-
 ### Objective
 
 Test whether explicit reasoning improves trajectory prediction and whether the rationale is consistent with the final action.
-
 ### Required records
 
 - rationale text;
@@ -633,19 +586,13 @@ Define before analysis:
 - action change under rationale-preserving versus rationale-destroying edits.
 
 ### Gate
-
 CoT is not considered an improvement merely because ADE decreases. It must be evaluated for grounding and rationale-action consistency.
-
----
-
 ## Phase 8 — Self-Consistency audit
 
 Status: PENDING.
-
 ### Objective
 
 Determine whether SC improves through genuine candidate agreement or through smoothing incompatible actions.
-
 ### Required candidate analysis
 
 For every sample:
@@ -676,19 +623,13 @@ For every sample:
 Does SC gain disappear when incompatible candidates are not averaged across modes?
 
 ### Gate
-
 SC conclusions require mode-aware candidate diagnostics, not only final ADE/FDE.
-
----
-
 ## Phase 9 — candidate search and selector-shortcut audit
 
 Status: PENDING.
-
 ### Objective
 
 Determine whether search/selection rewards visual risk grounding or merely history-action smoothness.
-
 ### Required candidate logging
 
 - candidate generation prompts and outputs;
@@ -713,19 +654,13 @@ At minimum:
 - compare selector choice under each intervention.
 
 ### Gate
-
 Search can claim grounded selection only if selector decisions respond to scene-risk evidence more than to irrelevant or shortcut-preserving changes.
-
----
-
 ## Phase 10 — causal grounding interventions
 
 Status: PENDING.
-
 ### Objective
 
 Separate visual grounding, history persistence, reasoning faithfulness, and output smoothness.
-
 ### Intervention families
 
 #### Visual interventions
@@ -770,17 +705,12 @@ Measure changes in:
 ### Causal claim discipline
 
 Use paired sample-level effects and explicitly define the intervention target. Do not infer causal grounding from aggregate correlation alone.
-
----
-
 ## Phase 11 — Grounded Risk-Conditioned Trajectory Consensus (GRTC)
 
 Status: PENDING.
-
 ### Objective
 
 Evaluate a training-free method only after the audit identifies concrete failure modes.
-
 ### Intended pipeline
 
 1. extract structured visual facts once;
@@ -807,19 +737,13 @@ Evaluate a training-free method only after the audit identifies concrete failure
 GRTC is a secondary contribution. Do not allow method tuning to erase or obscure negative audit findings.
 
 ### Gate
-
 GRTC must improve the predefined primary metric or grounding diagnostics without relying on oracle target information, unequal hidden compute, or post-hoc sample selection.
-
----
-
 ## Phase 12 — robustness and scale
 
 Status: PENDING.
-
 ### Objective
 
 Test whether findings generalize beyond one model, one small split, or one prompt configuration.
-
 ### Preferred expansion order
 
 1. full nuScenes trainval manifest or a larger deterministic subset;
@@ -839,19 +763,13 @@ Test whether findings generalize beyond one model, one small split, or one promp
 - failures and unavailable comparisons.
 
 ### Gate
-
 The paper must distinguish mini/pilot evidence from general conclusions. A result from nuScenes mini alone cannot be presented as universal.
-
----
-
 ## Phase 13 — paper artifacts
 
 Status: PENDING.
-
 ### Objective
 
 Generate the paper from immutable reports and records.
-
 ### Planned paper structure
 
 1. Introduction and central causal question.
