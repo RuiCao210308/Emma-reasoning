@@ -7,8 +7,12 @@ or trajectory evaluation.
 
 from __future__ import annotations
 
+import math
+import re
 from dataclasses import dataclass, field
 from typing import Any
+
+_COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
 
 
 @dataclass(frozen=True)
@@ -25,8 +29,8 @@ class UpstreamProvenance:
     def __post_init__(self) -> None:
         if not self.name or not self.model_id or not self.method:
             raise ValueError("name, model_id, and method must be non-empty.")
-        if len(self.commit) != 40:
-            raise ValueError("commit must be a full 40-character SHA.")
+        if not _COMMIT_RE.fullmatch(self.commit):
+            raise ValueError("commit must be a full 40-character lowercase SHA.")
         if not self.command:
             raise ValueError("command must not be empty.")
 
@@ -47,8 +51,8 @@ class OpenEmmaInvocation:
     def __post_init__(self) -> None:
         if not self.run_id or not self.sample_id:
             raise ValueError("run_id and sample_id must be non-empty.")
-        if not self.image_paths:
-            raise ValueError("image_paths must not be empty.")
+        if not self.image_paths or any(not path for path in self.image_paths):
+            raise ValueError("image_paths must contain non-empty paths.")
         lengths = {
             len(self.observed_speeds_mps),
             len(self.observed_curvatures_inv_m),
@@ -56,6 +60,22 @@ class OpenEmmaInvocation:
         }
         if len(lengths) != 1 or next(iter(lengths)) == 0:
             raise ValueError("Observed speed, curvature, and timestamp sequences must align.")
+        numeric_values = (
+            *self.observed_speeds_mps,
+            *self.observed_curvatures_inv_m,
+            *self.observed_timestamps_seconds,
+        )
+        if not all(math.isfinite(value) for value in numeric_values):
+            raise ValueError("Observed motion sequences must contain only finite values.")
+        if any(
+            later <= earlier
+            for earlier, later in zip(
+                self.observed_timestamps_seconds,
+                self.observed_timestamps_seconds[1:],
+                strict=True,
+            )
+        ):
+            raise ValueError("observed_timestamps_seconds must be strictly increasing.")
 
 
 @dataclass(frozen=True)
