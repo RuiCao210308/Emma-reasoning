@@ -49,9 +49,21 @@ ruff check .
 
 ## Working with coding agents
 
-Codex reads the root `AGENTS.md` for compact project guidance. A new session should read
-`docs/context/PROJECT_STATE.md`, then load only the task-specific rule under `.codex/rules/`
-that the task requires. Users do not need to paste the full project background into each session.
+The root `AGENTS.md` defines concise repository-wide rules. `docs/context/PROJECT_STATE.md` records current verified facts, while `GOAL.md` is the living ordered roadmap and active research gate. Task-specific details are loaded only from the relevant file under `.codex/rules/`.
+
+A new Codex session can normally begin with:
+
+```text
+Read AGENTS.md and continue the active goal.
+```
+
+The agent should continue from the first incomplete phase in `GOAL.md` without requiring the user to paste the full project history.
+
+Validate the context files with:
+
+```bash
+python scripts/check_agent_context.py
+```
 
 ## External repositories
 
