@@ -25,6 +25,7 @@ from emma_reasoning.evaluation import (
     worst_reconstruction_cases,
 )
 from emma_reasoning.trajectory import (
+    apply_action_policy,
     estimate_interval_actions,
     integrate_speed_curvature,
     world_to_ego_xy,
@@ -99,6 +100,8 @@ def main() -> None:
 
     actual_ades: list[float] = []
     actual_fdes: list[float] = []
+    sanitized_ades: list[float] = []
+    sanitized_fdes: list[float] = []
     nominal_ades: list[float] = []
     nominal_fdes: list[float] = []
     fit_residuals: list[float] = []
@@ -144,6 +147,12 @@ def main() -> None:
                 actions.curvatures_inv_m,
                 dt=actions.dt_seconds,
             )
+            policy_actions = apply_action_policy(actions.speeds_mps, actions.curvatures_inv_m)
+            sanitized_rollout = integrate_speed_curvature(
+                policy_actions.speeds_mps,
+                policy_actions.sanitized_curvatures_inv_m,
+                dt=actions.dt_seconds,
+            )
             nominal_rollout = integrate_speed_curvature(
                 actions.speeds_mps,
                 actions.curvatures_inv_m,
@@ -151,6 +160,7 @@ def main() -> None:
             )
 
             actual_metrics = evaluate_trajectory(actual_rollout.positions, target_local_xy)
+            sanitized_metrics = evaluate_trajectory(sanitized_rollout.positions, target_local_xy)
             nominal_metrics = evaluate_trajectory(nominal_rollout.positions, target_local_xy)
 
             record = {
@@ -170,8 +180,13 @@ def main() -> None:
                 "interval_arc_fit_residual_m": actions.fit_residual_m.tolist(),
                 "target_ego_xy_m": target_local_xy.tolist(),
                 "reconstructed_actual_dt_ego_xy_m": actual_rollout.positions.tolist(),
+                "reconstructed_sanitized_actual_dt_ego_xy_m": (
+                    sanitized_rollout.positions.tolist()
+                ),
                 "reconstructed_nominal_dt_ego_xy_m": nominal_rollout.positions.tolist(),
                 "actual_timestamp_metrics": metrics_to_dict(actual_metrics),
+                "sanitized_actual_timestamp_metrics": metrics_to_dict(sanitized_metrics),
+                "near_stop_count": int(np.count_nonzero(~policy_actions.curvature_valid)),
                 "nominal_dt_metrics": metrics_to_dict(nominal_metrics),
                 "nominal_horizon_metrics": horizon_metrics(
                     nominal_rollout.positions,
@@ -183,6 +198,8 @@ def main() -> None:
 
             actual_ades.append(actual_metrics.ade_m)
             actual_fdes.append(actual_metrics.fde_m)
+            sanitized_ades.append(sanitized_metrics.ade_m)
+            sanitized_fdes.append(sanitized_metrics.fde_m)
             nominal_ades.append(nominal_metrics.ade_m)
             nominal_fdes.append(nominal_metrics.fde_m)
             fit_residuals.extend(actions.fit_residual_m.tolist())
@@ -209,6 +226,20 @@ def main() -> None:
         "records": records_written,
         "actual_timestamp_ade_m": distribution_summary(actual_ades, name="actual ADE"),
         "actual_timestamp_fde_m": distribution_summary(actual_fdes, name="actual FDE"),
+        "sanitized_actual_timestamp_ade_m": distribution_summary(
+            sanitized_ades, name="sanitized actual ADE"
+        ),
+        "sanitized_actual_timestamp_fde_m": distribution_summary(
+            sanitized_fdes, name="sanitized actual FDE"
+        ),
+        "sanitized_minus_raw_ade_m": distribution_summary(
+            np.asarray(sanitized_ades) - np.asarray(actual_ades),
+            name="sanitized minus raw ADE",
+        ),
+        "sanitized_minus_raw_fde_m": distribution_summary(
+            np.asarray(sanitized_fdes) - np.asarray(actual_fdes),
+            name="sanitized minus raw FDE",
+        ),
         "nominal_dt_ade_m": distribution_summary(nominal_ades, name="nominal ADE"),
         "nominal_dt_fde_m": distribution_summary(nominal_fdes, name="nominal FDE"),
         "interval_arc_fit_residual_m": distribution_summary(
@@ -235,6 +266,33 @@ def main() -> None:
             [record["reconstructed_actual_dt_ego_xy_m"] for record in records],
             [record["target_ego_xy_m"] for record in records],
         ),
+        "sanitized_actual_timestamp_displacement_error_by_step_m": (
+            displacement_error_by_step(
+                [record["reconstructed_sanitized_actual_dt_ego_xy_m"] for record in records],
+                [record["target_ego_xy_m"] for record in records],
+            )
+        ),
+        "sanitized_minus_raw_displacement_error_by_step_m": {
+            f"step_{index + 1}": distribution_summary(
+                [
+                    np.linalg.norm(
+                        np.asarray(record["reconstructed_sanitized_actual_dt_ego_xy_m"])[index]
+                        - np.asarray(record["target_ego_xy_m"])[index]
+                    )
+                    - np.linalg.norm(
+                        np.asarray(record["reconstructed_actual_dt_ego_xy_m"])[index]
+                        - np.asarray(record["target_ego_xy_m"])[index]
+                    )
+                    for record in records
+                ],
+                name=f"sanitized minus raw step {index + 1}",
+            )
+            for index in range(args.fut_len)
+        },
+        "near_stop_intervals": int(sum(record["near_stop_count"] for record in records)),
+        "near_stop_proportion": float(
+            sum(record["near_stop_count"] for record in records) / (records_written * args.fut_len)
+        ),
         "nominal_dt_displacement_error_by_step_m": displacement_error_by_step(
             [record["reconstructed_nominal_dt_ego_xy_m"] for record in records],
             [record["target_ego_xy_m"] for record in records],
@@ -242,9 +300,7 @@ def main() -> None:
     }
     worst_cases = worst_reconstruction_cases(records)
     worst_cases_path = args.output.with_name("worst_cases.json")
-    summary_path.write_text(
-        json.dumps(summary, indent=2, allow_nan=False), encoding="utf-8"
-    )
+    summary_path.write_text(json.dumps(summary, indent=2, allow_nan=False), encoding="utf-8")
     worst_cases_path.write_text(
         json.dumps(worst_cases, indent=2, allow_nan=False), encoding="utf-8"
     )
