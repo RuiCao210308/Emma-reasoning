@@ -34,6 +34,10 @@ leakage-free controls on the same samples and evaluator. Negative results remain
   source audit found input/prompt divergence, silent failure-denominator changes, untrusted
   official timing/alignment, and future leakage in the separate waypoint/legacy paths. Untouched
   pilot readiness is NOT PASSED; see `reports/openemma_static_audit/report.md`.
+- **Untouched pilot preparation / Phase 2 — BLOCKED_PRE_INFERENCE.** A six-sample observed-only
+  manifest and record contract are frozen under `experiments/openemma_parity_pilot/`. No model
+  was loaded. The official CLI cannot execute only those windows without an approved control-path
+  change.
 
 ## Active branches and PRs
 
@@ -62,15 +66,18 @@ leakage-free controls on the same samples and evaluator. Negative results remain
 
 - PR #2 and PR #3 remain Draft and unmerged, so their artifacts are not available on `main`.
 - No OpenEMMA parity evidence exists yet.
-- The untouched pilot lacks a frozen manifest, pinned model revision, external raw-call capture,
-  verified runtime environment, and explicit authorization for first GPU inference.
+- The untouched pilot lacks an approved bounded execution/capture path, verified runtime
+  environment, and explicit authorization for first GPU inference.
+- The manifest and model revision are now frozen, but the control-path choice remains unresolved;
+  no Qwen weights are cached, the audit environment lacks model dependencies, and no working
+  NVIDIA driver/device is visible.
 - The PR #3 body still lacks the context-guidance summary because this host has no authenticated
   GitHub API client; branch commits and CI are current.
 
 ## Next milestone
 
-Prepare the bounded Phase 2 untouched-pilot contract: manifest, model revision, capture schema,
-environment, compute estimate, and failure policy. Request approval before model inference.
+Choose the Phase 2 control path (minimal parity wrapper, explicit upstream patch, or unbounded
+official CLI), then separately authorize any model download, environment setup, and inference.
 
 ## Update rule
 
