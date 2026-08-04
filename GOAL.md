@@ -4,8 +4,8 @@ Status: ACTIVE
 Owner: project repository  
 Last updated: 2026-08-04  
 Active branch: `architecture/openemma-upstream`  
-Active phase: Phase 0 — stabilize the upstream-first foundation  
-Current stop point: do not run model inference until Phase 1 passes
+Active phase: Phase 1 — pinned upstream synchronization and static audit
+Current stop point: complete the static audit and stop before model inference
 
 ## 1. Project goal
 
@@ -268,7 +268,7 @@ The Stage 2 control establishes the minimum bar for visual/reasoning methods.
 Each phase has an objective, required artifacts, and a gate. Do not skip phases.
 ## Phase 0 — stabilize the upstream-first foundation
 
-Status: ACTIVE.
+Status: PASSED.
 ### Objective
 
 Make PR #3 internally correct, context-efficient, and ready for static provenance work.
@@ -294,12 +294,15 @@ Phase 0 passes only when:
 - `third_party/` remains ignored;
 - current state and active goal are accurate.
 
+Decision: PASSED on 2026-08-04. Local context, pytest, Ruff, and diff checks passed;
+GitHub Actions run `30889593449` passed on the Phase 0 validation head.
+
 ### Stop condition
 
 Do not run OpenEMMA model inference in this phase.
 ## Phase 1 — pinned upstream synchronization and static audit
 
-Status: PENDING.
+Status: ACTIVE.
 ### Objective
 
 Determine what the official OpenEMMA and legacy CoT code actually do before writing or running an adapter.
@@ -842,19 +845,18 @@ Detailed records remain in ignored `outputs/<experiment_id>/`.
 
 ## 9. Immediate next actions
 
-The first incomplete work is Phase 0.
+The first incomplete work is Phase 1.
 
 Execute in this order:
 
-1. repair adjacent timestamp validation in `OpenEmmaInvocation`;
-2. add complete timestamp-validation tests;
-3. run context check, pytest, Ruff, and diff check;
-4. commit and push the focused fix to `architecture/openemma-upstream`;
-5. wait for the latest PR #3 CI result;
-6. after CI passes, synchronize pinned upstreams;
-7. perform Phase 1 static audit;
-8. update `PROJECT_STATE.md`, reports, and this file's active phase;
-9. stop before model inference.
+1. synchronize and verify both pinned upstream checkouts;
+2. audit the actual official and legacy execution paths against the Phase 1 questions;
+3. record immutable source references and runtime unknowns;
+4. generate the static-audit report and strict JSON summary;
+5. run context check, pytest, Ruff, and diff check;
+6. update `PROJECT_STATE.md`, reports, and this file's active phase;
+7. commit and push to the Phase 1 branch or the existing owning branch;
+8. stop before model inference.
 
 ## 10. Updating this goal
 

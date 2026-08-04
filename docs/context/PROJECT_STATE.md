@@ -27,16 +27,17 @@ leakage-free controls on the same samples and evaluator. Negative results remain
 - **Stage 2 — scientifically accepted, awaiting merge/cleanup in Draft PR #2: PASSED.**
   The frozen history-only baseline run covers 214 windows and 856 records. Four deterministic
   baselines were evaluated; sanitized-minus-raw oracle mean ADE was 0.000167 m.
-- **OpenEMMA architecture — implemented in Draft PR #3, awaiting review/merge.** Locking,
-  ownership boundaries, contracts, context guidance, and feasibility gates exist. Static audit,
-  untouched pilot, trusted re-evaluation, and adapter parity have not been performed.
+- **OpenEMMA architecture / Phase 0 — PASSED in Draft PR #3, awaiting review/merge.** Locking,
+  ownership boundaries, contracts, context guidance, and feasibility gates exist. Local checks
+  and GitHub Actions passed after the timestamp-validation repair. Static audit, untouched pilot,
+  trusted re-evaluation, and adapter parity have not been performed.
 
 ## Active branches and PRs
 
 - `main`: Stage 1 evaluator merged.
 - PR #2, `stage2-frozen-baselines` -> `main`: open Draft and unmerged.
 - PR #3, `architecture/openemma-upstream` -> `main`: open Draft and unmerged; this is the
-  active branch. `GOAL.md` defines Phase 0 as the first incomplete milestone.
+  active branch. `GOAL.md` defines Phase 1 as the first incomplete milestone.
 
 ## Pinned upstreams
 
@@ -56,16 +57,16 @@ leakage-free controls on the same samples and evaluator. Negative results remain
 
 ## Current blockers
 
-- PR #3 CI currently fails because adjacent timestamp validation incorrectly uses strict zip on
-  sequences of length N and N-1; Phase 0 must repair this before provenance work continues.
 - PR #2 and PR #3 remain Draft and unmerged, so their artifacts are not available on `main`.
 - Pinned upstream checkouts are absent and have not been locally verified.
 - No OpenEMMA parity evidence exists yet.
+- The PR #3 body still lacks the context-guidance summary because this host has no authenticated
+  GitHub API client; branch commits and CI are current.
 
 ## Next milestone
 
-Complete Phase 0 in `GOAL.md`: fix timestamp validation, pass local and GitHub CI, then begin the
-pinned OpenEMMA static audit. Stop before model inference.
+Complete Phase 1 in `GOAL.md`: synchronize the pinned clean upstreams, perform the static source
+audit, and publish its compact report. Stop before model inference.
 
 ## Update rule
 
