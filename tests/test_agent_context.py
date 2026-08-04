@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/check_agent_context.py"
 FILE_BUDGETS = {
     "AGENTS.md": 12 * 1024,
+    "GOAL.md": 40 * 1024,
     "docs/context/PROJECT_STATE.md": 10 * 1024,
     ".codex/rules/upstream-parity.md": 8 * 1024,
     ".codex/rules/experiments.md": 8 * 1024,
@@ -51,6 +52,12 @@ def test_agent_rule_references_exist() -> None:
     assert all((ROOT / reference).is_file() for reference in references)
 
 
+def test_agents_routes_active_work_through_goal() -> None:
+    text = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    assert "GOAL.md" in text
+    assert (ROOT / "GOAL.md").is_file()
+
+
 def test_context_check_script_succeeds() -> None:
     result = run_check(ROOT)
     assert result.returncode == 0, result.stdout + result.stderr
@@ -64,6 +71,26 @@ def test_oversized_agent_file_fails(tmp_path: Path) -> None:
 
     assert result.returncode != 0
     assert "budget" in result.stdout
+
+
+def test_oversized_goal_file_fails(tmp_path: Path) -> None:
+    copy_context_tree(tmp_path)
+    (tmp_path / "GOAL.md").write_text("goal line\n" * 6000, encoding="utf-8")
+
+    result = run_check(tmp_path)
+
+    assert result.returncode != 0
+    assert "GOAL.md" in result.stdout
+
+
+def test_missing_goal_fails(tmp_path: Path) -> None:
+    copy_context_tree(tmp_path)
+    (tmp_path / "GOAL.md").unlink()
+
+    result = run_check(tmp_path)
+
+    assert result.returncode != 0
+    assert "missing required file: GOAL.md" in result.stdout
 
 
 def test_missing_rule_fails(tmp_path: Path) -> None:
