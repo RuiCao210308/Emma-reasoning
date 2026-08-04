@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 from emma_reasoning.data.nuscenes_windows import iter_ego_windows, quaternion_yaw
 
@@ -38,7 +39,7 @@ def test_quaternion_yaw_for_quarter_turn() -> None:
     half_angle = np.pi / 4
     quaternion = [np.cos(half_angle), 0.0, 0.0, np.sin(half_angle)]
 
-    assert quaternion_yaw(quaternion) == np.pi / 2
+    assert quaternion_yaw(quaternion) == pytest.approx(np.pi / 2)
 
 
 def test_window_anchor_and_future_alignment() -> None:
